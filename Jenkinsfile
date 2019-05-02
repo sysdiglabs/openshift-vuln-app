@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER = credentials('docker-repository-credentials')
+        OPENSHIFTREF = credentials('openshift4-internal-repo')
     }
     stages {
         stage('Checkout') {
@@ -24,6 +25,13 @@ pipeline {
         stage('Scanning Image') {
             steps {
                 sysdigSecure 'sysdig_secure_images'
+            }
+        }
+        stage('Push Image (OpenShift internal repo)') {
+            steps {
+                sh "sudo docker login https://registry.apps.openshift4.openshift-sysdig.net --username ${OPENSHIFTREF_USR} --password ${OPENSHIFTREF_PSW}"
+                sh "docker tag sysdigcicd/cronagent registry.apps.openshift4.openshift-sysdig.net/sysdig-image/cronagent:0.1"
+                sh "docker push registry.apps.openshift4.openshift-sysdig.net/sysdig-image/cronagent:0.1"
             }
         }
    }

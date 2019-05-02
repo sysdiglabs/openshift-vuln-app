@@ -15,7 +15,7 @@ pipeline {
                 sh "sudo docker build -f Dockerfile -t sysdigcicd/cronagent ."
             }
         }
-        stage('Push Image (Scrap repo)') {
+        stage('Push Image (Staging repo)') {
             steps {
                 sh "sudo docker login --username ${DOCKER_USR} --password ${DOCKER_PSW}"
                 sh "sudo docker push sysdigcicd/cronagent"
